@@ -20477,13 +20477,12 @@ var AppActions = require('../actions/App-Actions.js');
 
 var EditItem = React.createClass({displayName: "EditItem",
 	handler: function(){
-		document.getElementById('editButton').value = "Save";
 		AppActions.editItem(this.props.item,this.props.index)
 	},
 	render: function(){
 		return(
 			React.createElement("span", {className: "input-group-btn"}, 
-				React.createElement("button", {className: "btn btn-warning", type: "button", id: "editButton", onClick: this.handler}, "Edit")
+				React.createElement("button", {className: "btn btn-warning", type: "button", onClick: this.handler}, "Edit")
 			)
 		)
 	}
@@ -20506,10 +20505,7 @@ function getTodoList(){
 var List = React.createClass({displayName: "List",
 	mixins:[StoreWatchMixin(getTodoList)],
 	updateProgress: function(){
-		document.getElementById('btnCheck').value = "X";
-	},
-	removeReadOnly: function(){
-		document.getElementById('ro').removeAttribute('readOnly');
+		document.getElementById('btnCheck').value = "√";
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -20522,7 +20518,7 @@ var List = React.createClass({displayName: "List",
 							React.createElement("span", {className: "input-group-btn"}, 
 							React.createElement("button", {className: "btn btn-notify", type: "button", id: "btnCheck", onClick: this.updateProgress}, "S")
 							), 
-							React.createElement("input", {readOnly: "readOnly", type: "text", className: "form-control", id: "ro", defaultValue: listItem, onClick: this.removeReadOnly}), 
+							React.createElement("input", {readOnly: true, type: "text", className: "form-control", defaultValue: listItem}), 
 							React.createElement(RemoveItem, {index: i}), 
 							React.createElement(EditItem, {item: listItem, index: i})
 						)

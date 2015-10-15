@@ -12,10 +12,7 @@ function getTodoList(){
 var List = React.createClass({
 	mixins:[StoreWatchMixin(getTodoList)],
 	updateProgress: function(){
-		document.getElementById('btnCheck').value = "X";
-	},
-	removeReadOnly: function(){
-		document.getElementById('ro').removeAttribute('readOnly');
+		document.getElementById('btnCheck').value = "√";
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -28,7 +25,7 @@ var List = React.createClass({
 							<span className="input-group-btn">
 							<button className="btn btn-notify" type="button" id="btnCheck" onClick={this.updateProgress}>S</button>
 							</span>
-							<input readOnly="readOnly" type="text" className="form-control" id="ro" defaultValue={listItem} onClick={this.removeReadOnly}/>
+							<input readOnly type="text" className="form-control" defaultValue={listItem}/>
 							<RemoveItem index = {i}/>
 							<EditItem item = {listItem} index = {i}/>
 						</div>
