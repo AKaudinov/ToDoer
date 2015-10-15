@@ -15,7 +15,7 @@ var List = React.createClass({
 		document.getElementById('btnCheck').value = "X";
 	},
 	removeReadOnly: function(){
-		document.getElementById('rd').removeAttribute('readOnly');
+		document.getElementById('ro').removeAttribute('readOnly');
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -28,7 +28,7 @@ var List = React.createClass({
 							<span className="input-group-btn">
 							<button className="btn btn-notify" type="button" id="btnCheck" onClick={this.updateProgress}>S</button>
 							</span>
-							<input readOnly type="text" className="form-control" id="rd"defaultValue={listItem} onClick={this.removeReadOnly}/>
+							<input readOnly="readOnly" type="text" className="form-control" id="ro" defaultValue={listItem} onClick={this.removeReadOnly}/>
 							<RemoveItem index = {i}/>
 							<EditItem item = {listItem} index = {i}/>
 						</div>

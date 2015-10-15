@@ -20509,7 +20509,7 @@ var List = React.createClass({displayName: "List",
 		document.getElementById('btnCheck').value = "X";
 	},
 	removeReadOnly: function(){
-		document.getElementById('rd').removeAttribute('readOnly');
+		document.getElementById('ro').removeAttribute('readOnly');
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -20522,7 +20522,7 @@ var List = React.createClass({displayName: "List",
 							React.createElement("span", {className: "input-group-btn"}, 
 							React.createElement("button", {className: "btn btn-notify", type: "button", id: "btnCheck", onClick: this.updateProgress}, "S")
 							), 
-							React.createElement("input", {readOnly: true, type: "text", className: "form-control", id: "rd", defaultValue: listItem, onClick: this.removeReadOnly}), 
+							React.createElement("input", {readOnly: "readOnly", type: "text", className: "form-control", id: "ro", defaultValue: listItem, onClick: this.removeReadOnly}), 
 							React.createElement(RemoveItem, {index: i}), 
 							React.createElement(EditItem, {item: listItem, index: i})
 						)
