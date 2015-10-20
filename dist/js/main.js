@@ -20475,25 +20475,25 @@ module.exports = AddItem;
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 
-var EditItem = React.createClass({displayName: "EditItem",
-	handler: function(){
-		AppActions.editItem(this.props.item,this.props.index)
+var Item = React.createClass({displayName: "Item",
+	handler: function(itemId){
+		var item = document.getElementById(itemId).value;
+		AppActions.editItem(item, this.props.index);
 	},
 	render: function(){
+		var itemId = "toDoItem" + this.props.index.toString();
 		return(
-			React.createElement("span", {className: "input-group-btn"}, 
-				React.createElement("button", {className: "btn btn-warning", type: "button", onClick: this.handler}, "Edit")
-			)
+			React.createElement("input", {type: "text", className: "form-control", id: itemId, onChange: this.handler.bind(this,itemId), defaultValue: this.props.item})
 		)
 	}
 });
 
-module.exports = EditItem;
+module.exports = Item;
 
 },{"../actions/App-Actions.js":161,"react":160}],164:[function(require,module,exports){
 var React = require('react');
+var Item = require('./App-Item.js');
 var AddItem = require('./App-AddItem.js');
-var EditItem = require('./App-EditItem.js');
 var RemoveItem = require('./App-RemoveItem.js');
 var AppStore = require('../stores/App-Store.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
@@ -20504,28 +20504,41 @@ function getTodoList(){
 
 var List = React.createClass({displayName: "List",
 	mixins:[StoreWatchMixin(getTodoList)],
-	updateProgress: function(){
-		document.getElementById('btnCheck').value = "√";
+	updateCheckBtn: function(btnid){
+		var chckBox = document.getElementById(btnid);
+		if(chckBox.innerHTML == "To do")
+		{
+			chckBox.innerHTML = "√";
+			chckBox.className = "btn btn-info";
+		}
+		else
+		{
+			chckBox.innerHTML = "To do";
+			chckBox.className = "btn btn-warning";
+		}
+	},
+	updateRead: function(){
+		document.getElementById('readItem').readOnly = false;
 	},
 	render: function(){
 		if(this.state.listItems != null)
 		{
 			var listItems = this.state.listItems.map(function(listItem,i){
+				var buttonid = "btnCheck" + [i].toString();
 				return(
 					React.createElement("div", {className: "col-lg-12", key: i}, 
 					React.createElement("div", {className: "form-group"}, 
 						React.createElement("div", {className: "input-group"}, 
 							React.createElement("span", {className: "input-group-btn"}, 
-							React.createElement("button", {className: "btn btn-notify", type: "button", id: "btnCheck", onClick: this.updateProgress}, "S")
+								React.createElement("button", {className: "btn btn-warning", type: "button", id: buttonid, onClick: this.updateCheckBtn.bind(this,buttonid)}, "To do")
 							), 
-							React.createElement("input", {readOnly: true, type: "text", className: "form-control", defaultValue: listItem}), 
-							React.createElement(RemoveItem, {index: i}), 
-							React.createElement(EditItem, {item: listItem, index: i})
+							React.createElement(Item, {item: listItem, index: i}), 
+							React.createElement(RemoveItem, {index: i})
 						)
 					)
 					)
 				);	
-			})
+			},this);
 		}
 		return (
 			React.createElement("div", {className: "well bs-component"}, 
@@ -20543,7 +20556,7 @@ var List = React.createClass({displayName: "List",
 
 module.exports = List;
 
-},{"../mixins/StoreWatchMixin.js":170,"../stores/App-Store.js":171,"./App-AddItem.js":162,"./App-EditItem.js":163,"./App-RemoveItem.js":165,"react":160}],165:[function(require,module,exports){
+},{"../mixins/StoreWatchMixin.js":170,"../stores/App-Store.js":171,"./App-AddItem.js":162,"./App-Item.js":163,"./App-RemoveItem.js":165,"react":160}],165:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 
@@ -20590,7 +20603,6 @@ var assign = require('react/lib/Object.assign');
 var AppDispatcher = assign(new Dispatcher(),{
 	handleViewAction: function(action,index){
 		console.log('action', action);
-		console.log(this);
 		if(typeof index === "undefined" || index == null){
 			this.dispatch({
 				source: 'VIEW_ACTION',
