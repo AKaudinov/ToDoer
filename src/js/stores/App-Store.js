@@ -1,38 +1,44 @@
 var AppDispatcher = require('../dispatchers/App-Dispatcher.js');
 var AppConstants = require('../constants/App-Constants.js');
+var Storage = require('../Storage/App-Storage.js');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('react/lib/Object.assign');
 var CHANGE_EVENT = 'change';
 var ListStorage = "ToDolist";
 
-var _list = _retrieveListFromStorage();
+var _list = Storage.retrieveLocalStorage();
+
+// _retrieveListFromStorage();
 
 
-function _setLocalStorage(storageName, list)
-{
-	localStorage.setItem(storageName, JSON.stringify(list));
-}
+// function _setLocalStorage(storageName, data)
+// {
+// 	localStorage.setItem(storageName, JSON.stringify(data));
+// }
 
-function _retrieveListFromStorage(){
-	var tempList = localStorage.getItem("ToDolist") != null ? JSON.parse(localStorage.getItem("ToDolist")) : [];
-	return tempList
-}
+// function _retrieveListFromStorage(){
+// 	var tempList = localStorage.getItem(ListStorage) != null ? JSON.parse(localStorage.getItem(ListStorage)) : [];
+// 	return tempList
+// }
 
 function _removeItem(index){
 	_list[index].inList = false;
 	_list.splice(index, 1);
-	_setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(ListStorage, _list);
+	// _setLocalStorage(ListStorage, _list);
 }
 
 function _addItem(item){
 	item['inList'] = true;
 	_list.push(item);
-	_setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(ListStorage, _list);
+	//_setLocalStorage(ListStorage, _list);
 }
 
 function _editItem(item,index){
 	_list[index] = item;
-	_setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(ListStorage, _list);
+	//_setLocalStorage(ListStorage, _list);
 }
 
 var AppStore = assign(EventEmitter.prototype,{

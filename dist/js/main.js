@@ -20411,6 +20411,33 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":33}],161:[function(require,module,exports){
+var React = require('react');
+var listStorage = "ToDolist";
+
+var Storage = {
+	setLocalStorage: function(storageName, data){
+		localStorage.setItem(storageName, JSON.stringify(data));
+	},
+	retrieveLocalStorage: function(storageName){
+		if(typeof storageName === "undefined" || storageName == null)
+		{
+			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
+			if(tempList.length == 0)
+			{
+				localStorage.removeItem(listStorage);
+			}
+			return tempList;
+		}
+		return JSON.parse(localStorage.getItem(storageName));
+	},
+	removeItemFromStorage: function(storageName){
+		localStorage.removeItem(storageName);
+	}
+}
+
+module.exports = Storage;
+
+},{"react":160}],162:[function(require,module,exports){
 var AppConstants = require('../constants/App-Constants.js');
 var AppDispatcher = require('../dispatchers/App-Dispatcher.js');
 
@@ -20438,17 +20465,29 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/App-Constants.js":167,"../dispatchers/App-Dispatcher.js":168}],162:[function(require,module,exports){
+},{"../constants/App-Constants.js":169,"../dispatchers/App-Dispatcher.js":170}],163:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
+var ValidationAlert = require('./App-ValidationAlert.js');
+
 
 var AddItem = React.createClass({displayName: "AddItem",
+	getInitialState: function(){
+		return{
+			isValid: true
+		}
+	},
 	handler: function(){
 		var itemValue = document.getElementById('itemInput').value;
 		if(itemValue == "")
 		{
+			this.setState({isValid: false});
 			return;
 		}
+		this.setState({
+			isValid: true
+		});
+		console.log(this);
 		document.getElementById('itemInput').value = "";
 		AppActions.addItem(itemValue)
 	},
@@ -20456,14 +20495,15 @@ var AddItem = React.createClass({displayName: "AddItem",
 		return(
 			React.createElement("div", {className: "col-lg-6", align: "center"}, 
 			React.createElement("div", {className: "form-group"}, 
-				React.createElement("label", {className: "control-label"}, "Add Item"), 
+				React.createElement("label", {className: "control-label"}, React.createElement("strong", null, "Add Item")), 
 					React.createElement("div", {className: "input-group"}, 
 						React.createElement("input", {type: "text", className: "form-control", id: "itemInput"}), 
 						React.createElement("span", {className: "input-group-btn"}, 
 							React.createElement("button", {className: "btn btn-primary", type: "button", onClick: this.handler}, "Add item")
 						)
 					)
-				)
+				), 
+					this.state.isValid != true ? React.createElement(ValidationAlert, null) : React.createElement("span", null)
 			)
 		)
 	}
@@ -20471,7 +20511,7 @@ var AddItem = React.createClass({displayName: "AddItem",
 
 module.exports = AddItem;
 
-},{"../actions/App-Actions.js":161,"react":160}],163:[function(require,module,exports){
+},{"../actions/App-Actions.js":162,"./App-ValidationAlert.js":167,"react":160}],164:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 
@@ -20490,17 +20530,19 @@ var Item = React.createClass({displayName: "Item",
 
 module.exports = Item;
 
-},{"../actions/App-Actions.js":161,"react":160}],164:[function(require,module,exports){
+},{"../actions/App-Actions.js":162,"react":160}],165:[function(require,module,exports){
 var React = require('react');
 var Item = require('./App-Item.js');
 var AddItem = require('./App-AddItem.js');
 var RemoveItem = require('./App-RemoveItem.js');
 var AppStore = require('../stores/App-Store.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
+var Storage = require('../Storage/App-Storage.js');
 
 function getTodoList(){
 	return {listItems: AppStore.getList()}
 }
+
 
 var List = React.createClass({displayName: "List",
 	mixins:[StoreWatchMixin(getTodoList)],
@@ -20516,9 +20558,25 @@ var List = React.createClass({displayName: "List",
 			chckBox.innerHTML = "To do";
 			chckBox.className = "btn btn-warning";
 		}
+
+		var button = {
+			detail: chckBox.className,
+			value: chckBox.innerHTML
+		}
+		Storage.setLocalStorage(btnid, button);
+		//localStorage.setItem(btnid, JSON.stringify(button));
 	},
-	updateRead: function(){
-		document.getElementById('readItem').readOnly = false;
+	getClassName: function(btnid){
+		var button = Storage.retrieveLocalStorage(btnid);
+		//JSON.parse(localStorage.getItem(btnid));
+		var details = button != null ? button.detail : "btn btn-warning";
+		return details;
+	},
+	getValue: function(btnid){
+		var button = Storage.retrieveLocalStorage(btnid);
+		//JSON.parse(localStorage.getItem(btnid));
+		var value = button != null ? button.value : "To do";
+		return value;
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -20530,10 +20588,10 @@ var List = React.createClass({displayName: "List",
 					React.createElement("div", {className: "form-group"}, 
 						React.createElement("div", {className: "input-group"}, 
 							React.createElement("span", {className: "input-group-btn"}, 
-								React.createElement("button", {className: "btn btn-warning", type: "button", id: buttonid, onClick: this.updateCheckBtn.bind(this,buttonid)}, "To do")
+								React.createElement("button", {className: this.getClassName(buttonid), type: "button", id: buttonid, onClick: this.updateCheckBtn.bind(this,buttonid)}, this.getValue(buttonid))
 							), 
 							React.createElement(Item, {item: listItem, index: i}), 
-							React.createElement(RemoveItem, {index: i})
+							React.createElement(RemoveItem, {index: i, buttonID: buttonid})
 						)
 					)
 					)
@@ -20556,13 +20614,15 @@ var List = React.createClass({displayName: "List",
 
 module.exports = List;
 
-},{"../mixins/StoreWatchMixin.js":170,"../stores/App-Store.js":171,"./App-AddItem.js":162,"./App-Item.js":163,"./App-RemoveItem.js":165,"react":160}],165:[function(require,module,exports){
+},{"../Storage/App-Storage.js":161,"../mixins/StoreWatchMixin.js":172,"../stores/App-Store.js":173,"./App-AddItem.js":163,"./App-Item.js":164,"./App-RemoveItem.js":166,"react":160}],166:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
+var Storage = require('../Storage/App-Storage.js');
 
 var RemoveItem = React.createClass({displayName: "RemoveItem",
 	handler: function(){
 		AppActions.removeItem(this.props.index)
+		Storage.removeItemFromStorage(this.props.buttonID)
 	},
 	render: function(){
 		return(
@@ -20575,7 +20635,24 @@ var RemoveItem = React.createClass({displayName: "RemoveItem",
 
 module.exports = RemoveItem;
 
-},{"../actions/App-Actions.js":161,"react":160}],166:[function(require,module,exports){
+},{"../Storage/App-Storage.js":161,"../actions/App-Actions.js":162,"react":160}],167:[function(require,module,exports){
+var React = require('react');
+var AppActions = require('../actions/App-Actions.js');
+
+var ValidationAlert = React.createClass({displayName: "ValidationAlert",
+	render: function(){
+		return (
+				React.createElement("div", {className: "alert alert-warning alert-dismissible"}, 
+					React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert"}, "x"), 
+					React.createElement("strong", null, "an input cannot be empty")
+				)
+		)
+	}
+});
+
+module.exports = ValidationAlert;
+
+},{"../actions/App-Actions.js":162,"react":160}],168:[function(require,module,exports){
 var React = require('react');
 var List = require('./App-List.js');
 
@@ -20589,14 +20666,14 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./App-List.js":164,"react":160}],167:[function(require,module,exports){
+},{"./App-List.js":165,"react":160}],169:[function(require,module,exports){
 module.exports ={
 	ADD_ITEM: 'ADD_ITEM',
 	REMOVE_ITEM: 'REMOVE_ITEM',
-	EDIT_ITEM: 'EDIT_ITEM'
+	EDIT_ITEM: 'EDIT_ITEM',
 };
 
-},{}],168:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 var assign = require('react/lib/Object.assign');
 
@@ -20609,7 +20686,7 @@ var AppDispatcher = assign(new Dispatcher(),{
 				action: action,
 			})
 		}
-		else{
+		else {
 			this.dispatch({
 				source: 'VIEW_ACTION',
 				action: action,
@@ -20621,13 +20698,13 @@ var AppDispatcher = assign(new Dispatcher(),{
 
 module.exports = AppDispatcher;	
 
-},{"flux":3,"react/lib/Object.assign":31}],169:[function(require,module,exports){
+},{"flux":3,"react/lib/Object.assign":31}],171:[function(require,module,exports){
 var App = require('./components/app.js');
 var React = require('react');
 
 React.render(React.createElement(App, null), document.getElementById('main'));
 
-},{"./components/app.js":166,"react":160}],170:[function(require,module,exports){
+},{"./components/app.js":168,"react":160}],172:[function(require,module,exports){
 var React = require('react');
 var AppStore = require('../stores/App-Store.js');
 
@@ -20650,42 +20727,48 @@ var StoreWatchMixin = function(callBack){
 
 module.exports = StoreWatchMixin;
 
-},{"../stores/App-Store.js":171,"react":160}],171:[function(require,module,exports){
+},{"../stores/App-Store.js":173,"react":160}],173:[function(require,module,exports){
 var AppDispatcher = require('../dispatchers/App-Dispatcher.js');
 var AppConstants = require('../constants/App-Constants.js');
+var Storage = require('../Storage/App-Storage.js');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('react/lib/Object.assign');
 var CHANGE_EVENT = 'change';
 var ListStorage = "ToDolist";
 
-var _list = _retrieveListFromStorage();
+var _list = Storage.retrieveLocalStorage();
+
+// _retrieveListFromStorage();
 
 
-function _setLocalStorage(storageName, list)
-{
-	localStorage.setItem(storageName, JSON.stringify(list));
-}
+// function _setLocalStorage(storageName, data)
+// {
+// 	localStorage.setItem(storageName, JSON.stringify(data));
+// }
 
-function _retrieveListFromStorage(){
-	var tempList = localStorage.getItem("ToDolist") != null ? JSON.parse(localStorage.getItem("ToDolist")) : [];
-	return tempList
-}
+// function _retrieveListFromStorage(){
+// 	var tempList = localStorage.getItem(ListStorage) != null ? JSON.parse(localStorage.getItem(ListStorage)) : [];
+// 	return tempList
+// }
 
 function _removeItem(index){
 	_list[index].inList = false;
 	_list.splice(index, 1);
-	_setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(ListStorage, _list);
+	// _setLocalStorage(ListStorage, _list);
 }
 
 function _addItem(item){
 	item['inList'] = true;
 	_list.push(item);
-	_setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(ListStorage, _list);
+	//_setLocalStorage(ListStorage, _list);
 }
 
 function _editItem(item,index){
 	_list[index] = item;
-	_setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(ListStorage, _list);
+	//_setLocalStorage(ListStorage, _list);
 }
 
 var AppStore = assign(EventEmitter.prototype,{
@@ -20724,4 +20807,4 @@ var AppStore = assign(EventEmitter.prototype,{
 
 module.exports = AppStore;
 
-},{"../constants/App-Constants.js":167,"../dispatchers/App-Dispatcher.js":168,"events":1,"react/lib/Object.assign":31}]},{},[169]);
+},{"../Storage/App-Storage.js":161,"../constants/App-Constants.js":169,"../dispatchers/App-Dispatcher.js":170,"events":1,"react/lib/Object.assign":31}]},{},[171]);

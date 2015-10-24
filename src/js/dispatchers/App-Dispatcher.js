@@ -10,7 +10,7 @@ var AppDispatcher = assign(new Dispatcher(),{
 				action: action,
 			})
 		}
-		else{
+		else {
 			this.dispatch({
 				source: 'VIEW_ACTION',
 				action: action,
