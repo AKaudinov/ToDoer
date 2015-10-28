@@ -5,6 +5,8 @@ var RemoveItem = require('./App-RemoveItem.js');
 var AppStore = require('../stores/App-Store.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 var Storage = require('../Storage/App-Storage.js');
+var ToDoImage = '/assets/ToDoArrow.png';
+var CompletedImage ='/assets/CompletedCheckBox.png';
 
 function getTodoList(){
 	return {listItems: AppStore.getList()}
@@ -15,54 +17,56 @@ var List = React.createClass({
 	mixins:[StoreWatchMixin(getTodoList)],
 	updateCheckBtn: function(btnid){
 		var chckBox = document.getElementById(btnid);
-		if(chckBox.innerHTML == "To do")
+		if(chckBox.className == "btn btn-primary")
 		{
-			chckBox.innerHTML = "√";
+			chckBox.value = "/assets/CompletedCheckBox.png";
 			chckBox.className = "btn btn-info";
 		}
 		else
 		{
-			chckBox.innerHTML = "To do";
-			chckBox.className = "btn btn-warning";
+			chckBox.value = "/assets/ToDoArrow.png";
+			chckBox.className = "btn btn-primary";
 		}
 
 		var button = {
 			detail: chckBox.className,
-			value: chckBox.innerHTML
+			val: chckBox.value
 		}
 		Storage.setLocalStorage(btnid, button);
-		//localStorage.setItem(btnid, JSON.stringify(button));
 	},
 	getClassName: function(btnid){
 		var button = Storage.retrieveLocalStorage(btnid);
-		//JSON.parse(localStorage.getItem(btnid));
-		var details = button != null ? button.detail : "btn btn-warning";
+		var details = button != null ? button.detail : "btn btn-primary";
 		return details;
 	},
 	getValue: function(btnid){
 		var button = Storage.retrieveLocalStorage(btnid);
-		//JSON.parse(localStorage.getItem(btnid));
-		var value = button != null ? button.value : "To do";
+		var value = button != null ? button.val : ToDoImage;
 		return value;
 	},
 	render: function(){
 		if(this.state.listItems != null)
 		{
 			var listItems = this.state.listItems.map(function(listItem,i){
-				var buttonid = "btnCheck" + [i].toString();
-				return(
+				if(listItem != null)
+				{
+					var buttonid = "btnCheck" + [i].toString();
+					return(
 					<div className="col-lg-12" key={i}>
-					<div className="form-group">
-						<div className="input-group">
-							<span className="input-group-btn">
-								<button className={this.getClassName(buttonid)} type="button" id={buttonid} onClick={this.updateCheckBtn.bind(this,buttonid)}>{this.getValue(buttonid)}</button>
-							</span>
-							<Item item = {listItem} index={i}/>
-							<RemoveItem index = {i} buttonID={buttonid}/>
+						<div className="form-group">
+							<div className="input-group">
+								<span className="input-group-btn">
+									<button className={this.getClassName(buttonid)} type="submit" id={buttonid} onClick={this.updateCheckBtn.bind(this,buttonid)}>
+										<img src={this.getValue(buttonid)} width="17" height="15"/>
+									</button>
+								</span>
+								<Item item = {listItem} index={i}/>
+								<RemoveItem index = {i} buttonID={buttonid}/>
+							</div>
 						</div>
 					</div>
-					</div>
-				);	
+					);
+				}	
 			},this);
 		}
 		return (

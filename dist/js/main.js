@@ -20538,6 +20538,8 @@ var RemoveItem = require('./App-RemoveItem.js');
 var AppStore = require('../stores/App-Store.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 var Storage = require('../Storage/App-Storage.js');
+var ToDoImage = '/assets/ToDoArrow.png';
+var CompletedImage ='/assets/CompletedCheckBox.png';
 
 function getTodoList(){
 	return {listItems: AppStore.getList()}
@@ -20548,54 +20550,56 @@ var List = React.createClass({displayName: "List",
 	mixins:[StoreWatchMixin(getTodoList)],
 	updateCheckBtn: function(btnid){
 		var chckBox = document.getElementById(btnid);
-		if(chckBox.innerHTML == "To do")
+		if(chckBox.className == "btn btn-primary")
 		{
-			chckBox.innerHTML = "√";
+			chckBox.value = "/assets/CompletedCheckBox.png";
 			chckBox.className = "btn btn-info";
 		}
 		else
 		{
-			chckBox.innerHTML = "To do";
-			chckBox.className = "btn btn-warning";
+			chckBox.value = "/assets/ToDoArrow.png";
+			chckBox.className = "btn btn-primary";
 		}
 
 		var button = {
 			detail: chckBox.className,
-			value: chckBox.innerHTML
+			val: chckBox.value
 		}
 		Storage.setLocalStorage(btnid, button);
-		//localStorage.setItem(btnid, JSON.stringify(button));
 	},
 	getClassName: function(btnid){
 		var button = Storage.retrieveLocalStorage(btnid);
-		//JSON.parse(localStorage.getItem(btnid));
-		var details = button != null ? button.detail : "btn btn-warning";
+		var details = button != null ? button.detail : "btn btn-primary";
 		return details;
 	},
 	getValue: function(btnid){
 		var button = Storage.retrieveLocalStorage(btnid);
-		//JSON.parse(localStorage.getItem(btnid));
-		var value = button != null ? button.value : "To do";
+		var value = button != null ? button.val : ToDoImage;
 		return value;
 	},
 	render: function(){
 		if(this.state.listItems != null)
 		{
 			var listItems = this.state.listItems.map(function(listItem,i){
-				var buttonid = "btnCheck" + [i].toString();
-				return(
+				if(listItem != null)
+				{
+					var buttonid = "btnCheck" + [i].toString();
+					return(
 					React.createElement("div", {className: "col-lg-12", key: i}, 
-					React.createElement("div", {className: "form-group"}, 
-						React.createElement("div", {className: "input-group"}, 
-							React.createElement("span", {className: "input-group-btn"}, 
-								React.createElement("button", {className: this.getClassName(buttonid), type: "button", id: buttonid, onClick: this.updateCheckBtn.bind(this,buttonid)}, this.getValue(buttonid))
-							), 
-							React.createElement(Item, {item: listItem, index: i}), 
-							React.createElement(RemoveItem, {index: i, buttonID: buttonid})
+						React.createElement("div", {className: "form-group"}, 
+							React.createElement("div", {className: "input-group"}, 
+								React.createElement("span", {className: "input-group-btn"}, 
+									React.createElement("button", {className: this.getClassName(buttonid), type: "submit", id: buttonid, onClick: this.updateCheckBtn.bind(this,buttonid)}, 
+										React.createElement("img", {src: this.getValue(buttonid), width: "17", height: "15"})
+									)
+								), 
+								React.createElement(Item, {item: listItem, index: i}), 
+								React.createElement(RemoveItem, {index: i, buttonID: buttonid})
+							)
 						)
 					)
-					)
-				);	
+					);
+				}	
 			},this);
 		}
 		return (
@@ -20738,37 +20742,25 @@ var ListStorage = "ToDolist";
 
 var _list = Storage.retrieveLocalStorage();
 
-// _retrieveListFromStorage();
-
-
-// function _setLocalStorage(storageName, data)
-// {
-// 	localStorage.setItem(storageName, JSON.stringify(data));
-// }
-
-// function _retrieveListFromStorage(){
-// 	var tempList = localStorage.getItem(ListStorage) != null ? JSON.parse(localStorage.getItem(ListStorage)) : [];
-// 	return tempList
-// }
-
 function _removeItem(index){
 	_list[index].inList = false;
-	_list.splice(index, 1);
+	_list[index] = null;
+	if(!_list.some(item => item != null))
+	{
+	_list = [];
+	}
 	Storage.setLocalStorage(ListStorage, _list);
-	// _setLocalStorage(ListStorage, _list);
 }
 
 function _addItem(item){
 	item['inList'] = true;
 	_list.push(item);
 	Storage.setLocalStorage(ListStorage, _list);
-	//_setLocalStorage(ListStorage, _list);
 }
 
 function _editItem(item,index){
 	_list[index] = item;
 	Storage.setLocalStorage(ListStorage, _list);
-	//_setLocalStorage(ListStorage, _list);
 }
 
 var AppStore = assign(EventEmitter.prototype,{

@@ -8,37 +8,25 @@ var ListStorage = "ToDolist";
 
 var _list = Storage.retrieveLocalStorage();
 
-// _retrieveListFromStorage();
-
-
-// function _setLocalStorage(storageName, data)
-// {
-// 	localStorage.setItem(storageName, JSON.stringify(data));
-// }
-
-// function _retrieveListFromStorage(){
-// 	var tempList = localStorage.getItem(ListStorage) != null ? JSON.parse(localStorage.getItem(ListStorage)) : [];
-// 	return tempList
-// }
-
 function _removeItem(index){
 	_list[index].inList = false;
-	_list.splice(index, 1);
+	_list[index] = null;
+	if(!_list.some(item => item != null))
+	{
+	_list = [];
+	}
 	Storage.setLocalStorage(ListStorage, _list);
-	// _setLocalStorage(ListStorage, _list);
 }
 
 function _addItem(item){
 	item['inList'] = true;
 	_list.push(item);
 	Storage.setLocalStorage(ListStorage, _list);
-	//_setLocalStorage(ListStorage, _list);
 }
 
 function _editItem(item,index){
 	_list[index] = item;
 	Storage.setLocalStorage(ListStorage, _list);
-	//_setLocalStorage(ListStorage, _list);
 }
 
 var AppStore = assign(EventEmitter.prototype,{
