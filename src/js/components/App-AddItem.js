@@ -1,14 +1,15 @@
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 var ValidationAlert = require('./App-ValidationAlert.js');
+var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 
+
+function setValidState(){
+	return {isValid: true}
+}
 
 var AddItem = React.createClass({
-	getInitialState: function(){
-		return{
-			isValid: true
-		}
-	},
+	mixins: [StoreWatchMixin(setValidState)],
 	handler: function(){
 		var itemValue = document.getElementById('itemInput').value;
 		if(itemValue == "")
@@ -20,10 +21,11 @@ var AddItem = React.createClass({
 			isValid: true
 		});
 		console.log(this);
-		document.getElementById('itemInput').value = "";
+		document.getElementById('itemInput').value="";
 		AppActions.addItem(itemValue)
 	},
 	render: function(){
+		console.log(this.state.isValid);
 		return(
 			<div className="col-lg-6" align="center">
 			<div className="form-group">

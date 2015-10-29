@@ -56,6 +56,8 @@ var AppStore = assign(EventEmitter.prototype,{
 			case AppConstants.EDIT_ITEM:
 			_editItem(payload.action.toDoItem,payload.action.index)
 			break;
+			case AppConstants.CLOSE_ALERT:
+			break;
 		}
 		AppStore.emitChange();
 

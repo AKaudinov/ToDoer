@@ -20460,6 +20460,11 @@ var AppActions = {
 			toDoItem: toDoItem,
 			index: index
 		})
+	},
+	closeAlert: function(){
+		AppDispatcher.handleViewAction({
+			actionType: AppConstants.CLOSE_ALERT
+		})
 	}
 }
 
@@ -20469,14 +20474,15 @@ module.exports = AppActions;
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 var ValidationAlert = require('./App-ValidationAlert.js');
+var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 
+
+function setValidState(){
+	return {isValid: true}
+}
 
 var AddItem = React.createClass({displayName: "AddItem",
-	getInitialState: function(){
-		return{
-			isValid: true
-		}
-	},
+	mixins: [StoreWatchMixin(setValidState)],
 	handler: function(){
 		var itemValue = document.getElementById('itemInput').value;
 		if(itemValue == "")
@@ -20488,10 +20494,11 @@ var AddItem = React.createClass({displayName: "AddItem",
 			isValid: true
 		});
 		console.log(this);
-		document.getElementById('itemInput').value = "";
+		document.getElementById('itemInput').value="";
 		AppActions.addItem(itemValue)
 	},
 	render: function(){
+		console.log(this.state.isValid);
 		return(
 			React.createElement("div", {className: "col-lg-6", align: "center"}, 
 			React.createElement("div", {className: "form-group"}, 
@@ -20511,7 +20518,7 @@ var AddItem = React.createClass({displayName: "AddItem",
 
 module.exports = AddItem;
 
-},{"../actions/App-Actions.js":162,"./App-ValidationAlert.js":167,"react":160}],164:[function(require,module,exports){
+},{"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":172,"./App-ValidationAlert.js":167,"react":160}],164:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 
@@ -20631,7 +20638,7 @@ var RemoveItem = React.createClass({displayName: "RemoveItem",
 	render: function(){
 		return(
 			React.createElement("span", {className: "input-group-btn"}, 
-				React.createElement("button", {className: "btn btn-danger", type: "button", onClick: this.handler}, "X")
+				React.createElement("button", {className: "btn btn-danger", type: "button", onClick: this.handler}, "x")
 			)
 		)
 	}
@@ -20644,10 +20651,13 @@ var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 
 var ValidationAlert = React.createClass({displayName: "ValidationAlert",
+	handler: function(){
+		AppActions.closeAlert();
+	},
 	render: function(){
 		return (
 				React.createElement("div", {className: "alert alert-warning alert-dismissible"}, 
-					React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert"}, "x"), 
+					React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", onClick: this.handler}, "x"), 
 					React.createElement("strong", null, "an input cannot be empty")
 				)
 		)
@@ -20675,6 +20685,7 @@ module.exports ={
 	ADD_ITEM: 'ADD_ITEM',
 	REMOVE_ITEM: 'REMOVE_ITEM',
 	EDIT_ITEM: 'EDIT_ITEM',
+	CLOSE_ALERT: 'CLOSE_ALERT'
 };
 
 },{}],170:[function(require,module,exports){
@@ -20682,21 +20693,12 @@ var Dispatcher = require('flux').Dispatcher;
 var assign = require('react/lib/Object.assign');
 
 var AppDispatcher = assign(new Dispatcher(),{
-	handleViewAction: function(action,index){
+	handleViewAction: function(action){
 		console.log('action', action);
-		if(typeof index === "undefined" || index == null){
 			this.dispatch({
 				source: 'VIEW_ACTION',
-				action: action,
-			})
-		}
-		else {
-			this.dispatch({
-				source: 'VIEW_ACTION',
-				action: action,
-				index: index
-			})
-		}
+				action: action
+		})
 	}
 })
 
@@ -20789,6 +20791,8 @@ var AppStore = assign(EventEmitter.prototype,{
 			break;
 			case AppConstants.EDIT_ITEM:
 			_editItem(payload.action.toDoItem,payload.action.index)
+			break;
+			case AppConstants.CLOSE_ALERT:
 			break;
 		}
 		AppStore.emitChange();

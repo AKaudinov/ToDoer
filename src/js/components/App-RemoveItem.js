@@ -10,7 +10,7 @@ var RemoveItem = React.createClass({
 	render: function(){
 		return(
 			<span className="input-group-btn">
-				<button className="btn btn-danger" type="button" onClick={this.handler}>X</button>
+				<button className="btn btn-danger" type="button" onClick={this.handler}>x</button>
 			</span>
 		)
 	}

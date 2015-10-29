@@ -20,6 +20,11 @@ var AppActions = {
 			toDoItem: toDoItem,
 			index: index
 		})
+	},
+	closeAlert: function(){
+		AppDispatcher.handleViewAction({
+			actionType: AppConstants.CLOSE_ALERT
+		})
 	}
 }
 
