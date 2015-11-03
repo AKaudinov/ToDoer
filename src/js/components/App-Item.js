@@ -1,9 +1,16 @@
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
+var Storage = require('../Storage/App-Storage.js');
 
 var Item = React.createClass({
 	handler: function(itemId){
 		var item = document.getElementById(itemId).value;
+		if(item == "")
+		{
+			AppActions.removeItem(this.props.index);
+			Storage.removeItemFromStorage(this.props.buttonId);
+			return;
+		}
 		AppActions.editItem(item, this.props.index);
 	},
 	render: function(){

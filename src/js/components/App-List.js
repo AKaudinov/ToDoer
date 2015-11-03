@@ -60,8 +60,8 @@ var List = React.createClass({
 										<img src={this.getValue(buttonid)} width="17" height="15"/>
 									</button>
 								</span>
-								<Item item = {listItem} index={i}/>
-								<RemoveItem index = {i} buttonID={buttonid}/>
+								<Item item = {listItem} index={i} buttonId={buttonid} />
+								<RemoveItem index = {i} buttonId={buttonid} />
 							</div>
 						</div>
 					</div>

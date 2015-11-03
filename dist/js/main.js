@@ -20521,10 +20521,17 @@ module.exports = AddItem;
 },{"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":172,"./App-ValidationAlert.js":167,"react":160}],164:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
+var Storage = require('../Storage/App-Storage.js');
 
 var Item = React.createClass({displayName: "Item",
 	handler: function(itemId){
 		var item = document.getElementById(itemId).value;
+		if(item == "")
+		{
+			AppActions.removeItem(this.props.index);
+			Storage.removeItemFromStorage(this.props.buttonId);
+			return;
+		}
 		AppActions.editItem(item, this.props.index);
 	},
 	render: function(){
@@ -20537,7 +20544,7 @@ var Item = React.createClass({displayName: "Item",
 
 module.exports = Item;
 
-},{"../actions/App-Actions.js":162,"react":160}],165:[function(require,module,exports){
+},{"../Storage/App-Storage.js":161,"../actions/App-Actions.js":162,"react":160}],165:[function(require,module,exports){
 var React = require('react');
 var Item = require('./App-Item.js');
 var AddItem = require('./App-AddItem.js');
@@ -20600,8 +20607,8 @@ var List = React.createClass({displayName: "List",
 										React.createElement("img", {src: this.getValue(buttonid), width: "17", height: "15"})
 									)
 								), 
-								React.createElement(Item, {item: listItem, index: i}), 
-								React.createElement(RemoveItem, {index: i, buttonID: buttonid})
+								React.createElement(Item, {item: listItem, index: i, buttonId: buttonid}), 
+								React.createElement(RemoveItem, {index: i, buttonId: buttonid})
 							)
 						)
 					)
@@ -20633,7 +20640,7 @@ var Storage = require('../Storage/App-Storage.js');
 var RemoveItem = React.createClass({displayName: "RemoveItem",
 	handler: function(){
 		AppActions.removeItem(this.props.index)
-		Storage.removeItemFromStorage(this.props.buttonID)
+		Storage.removeItemFromStorage(this.props.buttonId)
 	},
 	render: function(){
 		return(
@@ -20742,7 +20749,11 @@ var assign = require('react/lib/Object.assign');
 var CHANGE_EVENT = 'change';
 var ListStorage = "ToDolist";
 
-var _list = Storage.retrieveLocalStorage();
+var _list = [];
+
+function _returnList(){
+	return _list = Storage.retrieveLocalStorage();
+}
 
 function _removeItem(index){
 	_list[index].inList = false;
@@ -20777,7 +20788,7 @@ var AppStore = assign(EventEmitter.prototype,{
 	},
 
 	getList: function(){
-		return _list
+		return _returnList();
 	},
 
 	dispatcherIndex: AppDispatcher.register(function(payload){

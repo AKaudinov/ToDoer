@@ -6,7 +6,11 @@ var assign = require('react/lib/Object.assign');
 var CHANGE_EVENT = 'change';
 var ListStorage = "ToDolist";
 
-var _list = Storage.retrieveLocalStorage();
+var _list = [];
+
+function _returnList(){
+	return _list = Storage.retrieveLocalStorage();
+}
 
 function _removeItem(index){
 	_list[index].inList = false;
@@ -41,7 +45,7 @@ var AppStore = assign(EventEmitter.prototype,{
 	},
 
 	getList: function(){
-		return _list
+		return _returnList();
 	},
 
 	dispatcherIndex: AppDispatcher.register(function(payload){
