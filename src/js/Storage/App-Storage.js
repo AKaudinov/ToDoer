@@ -11,7 +11,7 @@ var Storage = {
 			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
 			if(tempList.length == 0)
 			{
-				localStorage.removeItem(listStorage);
+				localStorage.removeItem('ToDolist');
 			}
 			return tempList;
 		}

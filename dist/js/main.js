@@ -20424,7 +20424,7 @@ var Storage = {
 			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
 			if(tempList.length == 0)
 			{
-				localStorage.removeItem(listStorage);
+				localStorage.removeItem('ToDolist');
 			}
 			return tempList;
 		}
@@ -20497,6 +20497,13 @@ var AddItem = React.createClass({displayName: "AddItem",
 		document.getElementById('itemInput').value="";
 		AppActions.addItem(itemValue)
 	},
+	keyHandler: function(event){
+		if(event.keyCode == 13)
+		{
+			this.handler();
+			event.preventDefault();
+		}
+	},
 	render: function(){
 		console.log(this.state.isValid);
 		return(
@@ -20504,7 +20511,7 @@ var AddItem = React.createClass({displayName: "AddItem",
 			React.createElement("div", {className: "form-group"}, 
 				React.createElement("label", {className: "control-label"}, React.createElement("strong", null, "Add Item")), 
 					React.createElement("div", {className: "input-group"}, 
-						React.createElement("input", {type: "text", className: "form-control", id: "itemInput"}), 
+						React.createElement("input", {type: "text", className: "form-control", id: "itemInput", onKeyDown: this.keyHandler}), 
 						React.createElement("span", {className: "input-group-btn"}, 
 							React.createElement("button", {className: "btn btn-primary", type: "button", onClick: this.handler}, "Add item")
 						)

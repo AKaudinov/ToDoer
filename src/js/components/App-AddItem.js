@@ -24,6 +24,13 @@ var AddItem = React.createClass({
 		document.getElementById('itemInput').value="";
 		AppActions.addItem(itemValue)
 	},
+	keyHandler: function(event){
+		if(event.keyCode == 13)
+		{
+			this.handler();
+			event.preventDefault();
+		}
+	},
 	render: function(){
 		console.log(this.state.isValid);
 		return(
@@ -31,7 +38,7 @@ var AddItem = React.createClass({
 			<div className="form-group">
 				<label className="control-label"><strong>Add Item</strong></label>
 					<div className="input-group">
-						<input type="text" className="form-control" id="itemInput"/>
+						<input type="text" className="form-control" id="itemInput" onKeyDown={this.keyHandler}/>
 						<span className="input-group-btn">
 							<button className="btn btn-primary" type="button" onClick={this.handler}>Add item</button>
 						</span>
