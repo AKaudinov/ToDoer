@@ -7,7 +7,7 @@ var ValidationAlert = React.createClass({
 	},
 	render: function(){
 		return (
-				<div className="alert alert-warning alert-dismissible">
+				<div className="alert alert-danger alert-dismissible">
 					<button type="button" className="close" data-dismiss="alert" onClick={this.handler}>x</button>
 					<strong>an input cannot be empty</strong>
 				</div>

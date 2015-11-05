@@ -17,7 +17,7 @@ var List = React.createClass({
 	mixins:[StoreWatchMixin(getTodoList)],
 	updateCheckBtn: function(btnid){
 		var chckBox = document.getElementById(btnid);
-		if(chckBox.className == "btn btn-primary")
+		if(chckBox.className == "btn btn-success")
 		{
 			chckBox.value = "/assets/CompletedCheckBox.png";
 			chckBox.className = "btn btn-info";
@@ -25,7 +25,7 @@ var List = React.createClass({
 		else
 		{
 			chckBox.value = "/assets/ToDoArrow.png";
-			chckBox.className = "btn btn-primary";
+			chckBox.className = "btn btn-success";
 		}
 
 		var button = {
@@ -36,7 +36,7 @@ var List = React.createClass({
 	},
 	getClassName: function(btnid){
 		var button = Storage.retrieveLocalStorage(btnid);
-		var details = button != null ? button.detail : "btn btn-primary";
+		var details = button != null ? button.detail : "btn btn-success";
 		return details;
 	},
 	getValue: function(btnid){

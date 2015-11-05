@@ -20571,7 +20571,7 @@ var List = React.createClass({displayName: "List",
 	mixins:[StoreWatchMixin(getTodoList)],
 	updateCheckBtn: function(btnid){
 		var chckBox = document.getElementById(btnid);
-		if(chckBox.className == "btn btn-primary")
+		if(chckBox.className == "btn btn-success")
 		{
 			chckBox.value = "/assets/CompletedCheckBox.png";
 			chckBox.className = "btn btn-info";
@@ -20579,7 +20579,7 @@ var List = React.createClass({displayName: "List",
 		else
 		{
 			chckBox.value = "/assets/ToDoArrow.png";
-			chckBox.className = "btn btn-primary";
+			chckBox.className = "btn btn-success";
 		}
 
 		var button = {
@@ -20590,7 +20590,7 @@ var List = React.createClass({displayName: "List",
 	},
 	getClassName: function(btnid){
 		var button = Storage.retrieveLocalStorage(btnid);
-		var details = button != null ? button.detail : "btn btn-primary";
+		var details = button != null ? button.detail : "btn btn-success";
 		return details;
 	},
 	getValue: function(btnid){
@@ -20670,7 +20670,7 @@ var ValidationAlert = React.createClass({displayName: "ValidationAlert",
 	},
 	render: function(){
 		return (
-				React.createElement("div", {className: "alert alert-warning alert-dismissible"}, 
+				React.createElement("div", {className: "alert alert-danger alert-dismissible"}, 
 					React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", onClick: this.handler}, "x"), 
 					React.createElement("strong", null, "an input cannot be empty")
 				)
