@@ -20465,6 +20465,13 @@ var AppActions = {
 		AppDispatcher.handleViewAction({
 			actionType: AppConstants.CLOSE_ALERT
 		})
+	},
+	updateCheckBox: function(index,isDone){
+		AppDispatcher.handleViewAction({
+			actionType: AppConstants.UPDATE_CHECKBOX,
+			index: index,
+			isDone: isDone
+		})
 	}
 }
 
@@ -20559,44 +20566,18 @@ var RemoveItem = require('./App-RemoveItem.js');
 var AppStore = require('../stores/App-Store.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 var Storage = require('../Storage/App-Storage.js');
+var AppActions = require('../actions/App-Actions.js');
 var ToDoImage = '/assets/ToDoArrow.png';
 var CompletedImage ='/assets/CompletedCheckBox.png';
 
 function getTodoList(){
-	return {listItems: AppStore.getList()}
+	return { listItems: AppStore.getList() };
 }
-
 
 var List = React.createClass({displayName: "List",
 	mixins:[StoreWatchMixin(getTodoList)],
-	updateCheckBtn: function(btnid){
-		var chckBox = document.getElementById(btnid);
-		if(chckBox.className == "btn btn-success")
-		{
-			chckBox.value = "/assets/CompletedCheckBox.png";
-			chckBox.className = "btn btn-info";
-		}
-		else
-		{
-			chckBox.value = "/assets/ToDoArrow.png";
-			chckBox.className = "btn btn-success";
-		}
-
-		var button = {
-			detail: chckBox.className,
-			val: chckBox.value
-		}
-		Storage.setLocalStorage(btnid, button);
-	},
-	getClassName: function(btnid){
-		var button = Storage.retrieveLocalStorage(btnid);
-		var details = button != null ? button.detail : "btn btn-success";
-		return details;
-	},
-	getValue: function(btnid){
-		var button = Storage.retrieveLocalStorage(btnid);
-		var value = button != null ? button.val : ToDoImage;
-		return value;
+	updateCheckBox: function(itemIndex, isDone){
+		AppActions.updateCheckBox(itemIndex, isDone);
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -20610,11 +20591,11 @@ var List = React.createClass({displayName: "List",
 						React.createElement("div", {className: "form-group"}, 
 							React.createElement("div", {className: "input-group"}, 
 								React.createElement("span", {className: "input-group-btn"}, 
-									React.createElement("button", {className: this.getClassName(buttonid), type: "submit", id: buttonid, onClick: this.updateCheckBtn.bind(this,buttonid)}, 
-										React.createElement("img", {src: this.getValue(buttonid), width: "17", height: "15"})
+									React.createElement("button", {className: listItem.done ? "btn btn-info" : "btn btn-success", type: "button", id: buttonid, onClick: this.updateCheckBox.bind(this,i,listItem.done ? false : true)}, 
+										React.createElement("img", {src: listItem.done ? CompletedImage : ToDoImage, width: "17", height: "15"})
 									)
 								), 
-								React.createElement(Item, {item: listItem, index: i, buttonId: buttonid}), 
+								React.createElement(Item, {item: listItem.text, index: i, buttonId: buttonid}), 
 								React.createElement(RemoveItem, {index: i, buttonId: buttonid})
 							)
 						)
@@ -20639,7 +20620,7 @@ var List = React.createClass({displayName: "List",
 
 module.exports = List;
 
-},{"../Storage/App-Storage.js":161,"../mixins/StoreWatchMixin.js":172,"../stores/App-Store.js":173,"./App-AddItem.js":163,"./App-Item.js":164,"./App-RemoveItem.js":166,"react":160}],166:[function(require,module,exports){
+},{"../Storage/App-Storage.js":161,"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":172,"../stores/App-Store.js":173,"./App-AddItem.js":163,"./App-Item.js":164,"./App-RemoveItem.js":166,"react":160}],166:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 var Storage = require('../Storage/App-Storage.js');
@@ -20699,7 +20680,8 @@ module.exports ={
 	ADD_ITEM: 'ADD_ITEM',
 	REMOVE_ITEM: 'REMOVE_ITEM',
 	EDIT_ITEM: 'EDIT_ITEM',
-	CLOSE_ALERT: 'CLOSE_ALERT'
+	CLOSE_ALERT: 'CLOSE_ALERT',
+	UPDATE_CHECKBOX: 'UPDATE_CHECKBOX'
 };
 
 },{}],170:[function(require,module,exports){
@@ -20763,7 +20745,6 @@ function _returnList(){
 }
 
 function _removeItem(index){
-	_list[index].inList = false;
 	_list[index] = null;
 	if(!_list.some(item => item != null))
 	{
@@ -20773,13 +20754,20 @@ function _removeItem(index){
 }
 
 function _addItem(item){
-	item['inList'] = true;
-	_list.push(item);
+	_list.push({
+		text: item,
+		done: false
+	});
 	Storage.setLocalStorage(ListStorage, _list);
 }
 
 function _editItem(item,index){
-	_list[index] = item;
+	_list[index].text = item;
+	Storage.setLocalStorage(ListStorage, _list);
+}
+
+function _updateItemProgress(index,isDone){
+	_list[index].done = isDone;
 	Storage.setLocalStorage(ListStorage, _list);
 }
 
@@ -20802,15 +20790,18 @@ var AppStore = assign(EventEmitter.prototype,{
 		var action = payload.action //this is our action from handleViewAction
 		switch(action.actionType){
 			case AppConstants.ADD_ITEM:
-			_addItem(payload.action.toDoItem);
+				_addItem(payload.action.toDoItem);
 			break;
 			case AppConstants.REMOVE_ITEM:
-			_removeItem(payload.action.index);
+				_removeItem(payload.action.index);
 			break;
 			case AppConstants.EDIT_ITEM:
-			_editItem(payload.action.toDoItem,payload.action.index)
+				_editItem(payload.action.toDoItem,payload.action.index)
 			break;
 			case AppConstants.CLOSE_ALERT:
+			break;
+			case AppConstants.UPDATE_CHECKBOX:
+				_updateItemProgress(payload.action.index,payload.action.isDone);
 			break;
 		}
 		AppStore.emitChange();

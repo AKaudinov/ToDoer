@@ -13,7 +13,6 @@ function _returnList(){
 }
 
 function _removeItem(index){
-	_list[index].inList = false;
 	_list[index] = null;
 	if(!_list.some(item => item != null))
 	{
@@ -23,13 +22,20 @@ function _removeItem(index){
 }
 
 function _addItem(item){
-	item['inList'] = true;
-	_list.push(item);
+	_list.push({
+		text: item,
+		done: false
+	});
 	Storage.setLocalStorage(ListStorage, _list);
 }
 
 function _editItem(item,index){
-	_list[index] = item;
+	_list[index].text = item;
+	Storage.setLocalStorage(ListStorage, _list);
+}
+
+function _updateItemProgress(index,isDone){
+	_list[index].done = isDone;
 	Storage.setLocalStorage(ListStorage, _list);
 }
 
@@ -52,15 +58,18 @@ var AppStore = assign(EventEmitter.prototype,{
 		var action = payload.action //this is our action from handleViewAction
 		switch(action.actionType){
 			case AppConstants.ADD_ITEM:
-			_addItem(payload.action.toDoItem);
+				_addItem(payload.action.toDoItem);
 			break;
 			case AppConstants.REMOVE_ITEM:
-			_removeItem(payload.action.index);
+				_removeItem(payload.action.index);
 			break;
 			case AppConstants.EDIT_ITEM:
-			_editItem(payload.action.toDoItem,payload.action.index)
+				_editItem(payload.action.toDoItem,payload.action.index)
 			break;
 			case AppConstants.CLOSE_ALERT:
+			break;
+			case AppConstants.UPDATE_CHECKBOX:
+				_updateItemProgress(payload.action.index,payload.action.isDone);
 			break;
 		}
 		AppStore.emitChange();

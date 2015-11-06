@@ -5,44 +5,18 @@ var RemoveItem = require('./App-RemoveItem.js');
 var AppStore = require('../stores/App-Store.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 var Storage = require('../Storage/App-Storage.js');
+var AppActions = require('../actions/App-Actions.js');
 var ToDoImage = '/assets/ToDoArrow.png';
 var CompletedImage ='/assets/CompletedCheckBox.png';
 
 function getTodoList(){
-	return {listItems: AppStore.getList()}
+	return { listItems: AppStore.getList() };
 }
-
 
 var List = React.createClass({
 	mixins:[StoreWatchMixin(getTodoList)],
-	updateCheckBtn: function(btnid){
-		var chckBox = document.getElementById(btnid);
-		if(chckBox.className == "btn btn-success")
-		{
-			chckBox.value = "/assets/CompletedCheckBox.png";
-			chckBox.className = "btn btn-info";
-		}
-		else
-		{
-			chckBox.value = "/assets/ToDoArrow.png";
-			chckBox.className = "btn btn-success";
-		}
-
-		var button = {
-			detail: chckBox.className,
-			val: chckBox.value
-		}
-		Storage.setLocalStorage(btnid, button);
-	},
-	getClassName: function(btnid){
-		var button = Storage.retrieveLocalStorage(btnid);
-		var details = button != null ? button.detail : "btn btn-success";
-		return details;
-	},
-	getValue: function(btnid){
-		var button = Storage.retrieveLocalStorage(btnid);
-		var value = button != null ? button.val : ToDoImage;
-		return value;
+	updateCheckBox: function(itemIndex, isDone){
+		AppActions.updateCheckBox(itemIndex, isDone);
 	},
 	render: function(){
 		if(this.state.listItems != null)
@@ -56,11 +30,11 @@ var List = React.createClass({
 						<div className="form-group">
 							<div className="input-group">
 								<span className="input-group-btn">
-									<button className={this.getClassName(buttonid)} type="submit" id={buttonid} onClick={this.updateCheckBtn.bind(this,buttonid)}>
-										<img src={this.getValue(buttonid)} width="17" height="15"/>
+									<button className={listItem.done ? "btn btn-info" : "btn btn-success"} type="button" id={buttonid} onClick={this.updateCheckBox.bind(this,i,listItem.done ? false : true)}>
+										<img src={listItem.done ? CompletedImage : ToDoImage} width="17" height="15"/>
 									</button>
 								</span>
-								<Item item = {listItem} index={i} buttonId={buttonid} />
+								<Item item = {listItem.text} index={i} buttonId={buttonid}/>
 								<RemoveItem index = {i} buttonId={buttonid} />
 							</div>
 						</div>

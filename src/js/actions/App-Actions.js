@@ -25,6 +25,13 @@ var AppActions = {
 		AppDispatcher.handleViewAction({
 			actionType: AppConstants.CLOSE_ALERT
 		})
+	},
+	updateCheckBox: function(index,isDone){
+		AppDispatcher.handleViewAction({
+			actionType: AppConstants.UPDATE_CHECKBOX,
+			index: index,
+			isDone: isDone
+		})
 	}
 }
 
