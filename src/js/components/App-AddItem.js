@@ -17,10 +17,6 @@ var AddItem = React.createClass({
 			this.setState({isValid: false});
 			return;
 		}
-		this.setState({
-			isValid: true
-		});
-		console.log(this);
 		document.getElementById('itemInput').value="";
 		AppActions.addItem(itemValue)
 	},
@@ -31,20 +27,28 @@ var AddItem = React.createClass({
 			event.preventDefault();
 		}
 	},
+	errorHandler: function(){
+		var item = document.getElementById('itemInput');
+		if(item.value != ""){
+			AppActions.removeAlert();
+		}
+	},
 	render: function(){
 		console.log(this.state.isValid);
+		var errorStyle={
+				border: '2px solid red'
+		};
 		return(
 			<div className="col-lg-6" align="center">
 			<div className="form-group">
 				<label className="control-label"><strong>Add Item</strong></label>
 					<div className="input-group">
-						<input type="text" className="form-control" id="itemInput" onKeyDown={this.keyHandler}/>
+						<input type="text" className="form-control" id="itemInput" onChange={this.errorHandler} style={this.state.isValid == true ? {border: 'none'} : errorStyle} onKeyDown={this.keyHandler}/>
 						<span className="input-group-btn">
-							<button className="btn btn-primary" type="button" onClick={this.handler}>Add item</button>
+							<button className="btn btn-success" type="button" onClick={this.handler}>Add item</button>
 						</span>
 					</div>
 				</div>
-					{this.state.isValid != true ? <ValidationAlert /> : <span/>}
 			</div>
 		)
 	}

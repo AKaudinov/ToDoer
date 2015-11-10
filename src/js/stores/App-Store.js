@@ -66,7 +66,7 @@ var AppStore = assign(EventEmitter.prototype,{
 			case AppConstants.EDIT_ITEM:
 				_editItem(payload.action.toDoItem,payload.action.index)
 			break;
-			case AppConstants.CLOSE_ALERT:
+			case AppConstants.REMOVE_ALERT:
 			break;
 			case AppConstants.UPDATE_CHECKBOX:
 				_updateItemProgress(payload.action.index,payload.action.isDone);

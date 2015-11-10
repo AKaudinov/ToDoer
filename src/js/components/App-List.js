@@ -30,7 +30,7 @@ var List = React.createClass({
 						<div className="form-group">
 							<div className="input-group">
 								<span className="input-group-btn">
-									<button className={listItem.done ? "btn btn-info" : "btn btn-success"} type="button" id={buttonid} onClick={this.updateCheckBox.bind(this,i,listItem.done ? false : true)}>
+									<button className={listItem.done ? "btn btn-info" : "btn btn-primary"} type="button" id={buttonid} onClick={this.updateCheckBox.bind(this,i,listItem.done ? false : true)}>
 										<img src={listItem.done ? CompletedImage : ToDoImage} width="17" height="15"/>
 									</button>
 								</span>

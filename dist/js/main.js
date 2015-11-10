@@ -20461,9 +20461,9 @@ var AppActions = {
 			index: index
 		})
 	},
-	closeAlert: function(){
+	removeAlert: function(){
 		AppDispatcher.handleViewAction({
-			actionType: AppConstants.CLOSE_ALERT
+			actionType: AppConstants.REMOVE_ALERT
 		})
 	},
 	updateCheckBox: function(index,isDone){
@@ -20497,10 +20497,6 @@ var AddItem = React.createClass({displayName: "AddItem",
 			this.setState({isValid: false});
 			return;
 		}
-		this.setState({
-			isValid: true
-		});
-		console.log(this);
 		document.getElementById('itemInput').value="";
 		AppActions.addItem(itemValue)
 	},
@@ -20511,20 +20507,28 @@ var AddItem = React.createClass({displayName: "AddItem",
 			event.preventDefault();
 		}
 	},
+	errorHandler: function(){
+		var item = document.getElementById('itemInput');
+		if(item.value != ""){
+			AppActions.removeAlert();
+		}
+	},
 	render: function(){
 		console.log(this.state.isValid);
+		var errorStyle={
+				border: '2px solid red'
+		};
 		return(
 			React.createElement("div", {className: "col-lg-6", align: "center"}, 
 			React.createElement("div", {className: "form-group"}, 
 				React.createElement("label", {className: "control-label"}, React.createElement("strong", null, "Add Item")), 
 					React.createElement("div", {className: "input-group"}, 
-						React.createElement("input", {type: "text", className: "form-control", id: "itemInput", onKeyDown: this.keyHandler}), 
+						React.createElement("input", {type: "text", className: "form-control", id: "itemInput", onChange: this.errorHandler, style: this.state.isValid == true ? {border: 'none'} : errorStyle, onKeyDown: this.keyHandler}), 
 						React.createElement("span", {className: "input-group-btn"}, 
-							React.createElement("button", {className: "btn btn-primary", type: "button", onClick: this.handler}, "Add item")
+							React.createElement("button", {className: "btn btn-success", type: "button", onClick: this.handler}, "Add item")
 						)
 					)
-				), 
-					this.state.isValid != true ? React.createElement(ValidationAlert, null) : React.createElement("span", null)
+				)
 			)
 		)
 	}
@@ -20543,7 +20547,6 @@ var Item = React.createClass({displayName: "Item",
 		if(item == "")
 		{
 			AppActions.removeItem(this.props.index);
-			Storage.removeItemFromStorage(this.props.buttonId);
 			return;
 		}
 		AppActions.editItem(item, this.props.index);
@@ -20591,7 +20594,7 @@ var List = React.createClass({displayName: "List",
 						React.createElement("div", {className: "form-group"}, 
 							React.createElement("div", {className: "input-group"}, 
 								React.createElement("span", {className: "input-group-btn"}, 
-									React.createElement("button", {className: listItem.done ? "btn btn-info" : "btn btn-success", type: "button", id: buttonid, onClick: this.updateCheckBox.bind(this,i,listItem.done ? false : true)}, 
+									React.createElement("button", {className: listItem.done ? "btn btn-info" : "btn btn-primary", type: "button", id: buttonid, onClick: this.updateCheckBox.bind(this,i,listItem.done ? false : true)}, 
 										React.createElement("img", {src: listItem.done ? CompletedImage : ToDoImage, width: "17", height: "15"})
 									)
 								), 
@@ -20680,7 +20683,7 @@ module.exports ={
 	ADD_ITEM: 'ADD_ITEM',
 	REMOVE_ITEM: 'REMOVE_ITEM',
 	EDIT_ITEM: 'EDIT_ITEM',
-	CLOSE_ALERT: 'CLOSE_ALERT',
+	REMOVE_ALERT: 'REMOVE_ALERT',
 	UPDATE_CHECKBOX: 'UPDATE_CHECKBOX'
 };
 
@@ -20798,7 +20801,7 @@ var AppStore = assign(EventEmitter.prototype,{
 			case AppConstants.EDIT_ITEM:
 				_editItem(payload.action.toDoItem,payload.action.index)
 			break;
-			case AppConstants.CLOSE_ALERT:
+			case AppConstants.REMOVE_ALERT:
 			break;
 			case AppConstants.UPDATE_CHECKBOX:
 				_updateItemProgress(payload.action.index,payload.action.isDone);

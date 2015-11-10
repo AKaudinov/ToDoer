@@ -21,9 +21,9 @@ var AppActions = {
 			index: index
 		})
 	},
-	closeAlert: function(){
+	removeAlert: function(){
 		AppDispatcher.handleViewAction({
-			actionType: AppConstants.CLOSE_ALERT
+			actionType: AppConstants.REMOVE_ALERT
 		})
 	},
 	updateCheckBox: function(index,isDone){

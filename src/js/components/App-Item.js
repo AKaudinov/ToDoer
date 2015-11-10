@@ -8,7 +8,6 @@ var Item = React.createClass({
 		if(item == "")
 		{
 			AppActions.removeItem(this.props.index);
-			Storage.removeItemFromStorage(this.props.buttonId);
 			return;
 		}
 		AppActions.editItem(item, this.props.index);
