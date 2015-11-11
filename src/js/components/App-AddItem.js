@@ -1,6 +1,5 @@
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
-var ValidationAlert = require('./App-ValidationAlert.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 
 

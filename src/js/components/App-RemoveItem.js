@@ -5,7 +5,6 @@ var Storage = require('../Storage/App-Storage.js');
 var RemoveItem = React.createClass({
 	handler: function(){
 		AppActions.removeItem(this.props.index)
-		Storage.removeItemFromStorage(this.props.buttonId)
 	},
 	render: function(){
 		return(

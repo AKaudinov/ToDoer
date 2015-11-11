@@ -20418,20 +20418,13 @@ var Storage = {
 	setLocalStorage: function(storageName, data){
 		localStorage.setItem(storageName, JSON.stringify(data));
 	},
-	retrieveLocalStorage: function(storageName){
-		if(typeof storageName === "undefined" || storageName == null)
-		{
+	retrieveLocalStorage: function(){
 			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
 			if(tempList.length == 0)
 			{
 				localStorage.removeItem('ToDolist');
 			}
 			return tempList;
-		}
-		return JSON.parse(localStorage.getItem(storageName));
-	},
-	removeItemFromStorage: function(storageName){
-		localStorage.removeItem(storageName);
 	}
 }
 
@@ -20477,10 +20470,9 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/App-Constants.js":169,"../dispatchers/App-Dispatcher.js":170}],163:[function(require,module,exports){
+},{"../constants/App-Constants.js":168,"../dispatchers/App-Dispatcher.js":169}],163:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
-var ValidationAlert = require('./App-ValidationAlert.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 
 
@@ -20536,7 +20528,7 @@ var AddItem = React.createClass({displayName: "AddItem",
 
 module.exports = AddItem;
 
-},{"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":172,"./App-ValidationAlert.js":167,"react":160}],164:[function(require,module,exports){
+},{"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":171,"react":160}],164:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 var Storage = require('../Storage/App-Storage.js');
@@ -20623,7 +20615,7 @@ var List = React.createClass({displayName: "List",
 
 module.exports = List;
 
-},{"../Storage/App-Storage.js":161,"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":172,"../stores/App-Store.js":173,"./App-AddItem.js":163,"./App-Item.js":164,"./App-RemoveItem.js":166,"react":160}],166:[function(require,module,exports){
+},{"../Storage/App-Storage.js":161,"../actions/App-Actions.js":162,"../mixins/StoreWatchMixin.js":171,"../stores/App-Store.js":172,"./App-AddItem.js":163,"./App-Item.js":164,"./App-RemoveItem.js":166,"react":160}],166:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/App-Actions.js');
 var Storage = require('../Storage/App-Storage.js');
@@ -20631,7 +20623,6 @@ var Storage = require('../Storage/App-Storage.js');
 var RemoveItem = React.createClass({displayName: "RemoveItem",
 	handler: function(){
 		AppActions.removeItem(this.props.index)
-		Storage.removeItemFromStorage(this.props.buttonId)
 	},
 	render: function(){
 		return(
@@ -20646,26 +20637,6 @@ module.exports = RemoveItem;
 
 },{"../Storage/App-Storage.js":161,"../actions/App-Actions.js":162,"react":160}],167:[function(require,module,exports){
 var React = require('react');
-var AppActions = require('../actions/App-Actions.js');
-
-var ValidationAlert = React.createClass({displayName: "ValidationAlert",
-	handler: function(){
-		AppActions.closeAlert();
-	},
-	render: function(){
-		return (
-				React.createElement("div", {className: "alert alert-danger alert-dismissible"}, 
-					React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", onClick: this.handler}, "x"), 
-					React.createElement("strong", null, "an input cannot be empty")
-				)
-		)
-	}
-});
-
-module.exports = ValidationAlert;
-
-},{"../actions/App-Actions.js":162,"react":160}],168:[function(require,module,exports){
-var React = require('react');
 var List = require('./App-List.js');
 
 var App = React.createClass({displayName: "App",
@@ -20678,7 +20649,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./App-List.js":165,"react":160}],169:[function(require,module,exports){
+},{"./App-List.js":165,"react":160}],168:[function(require,module,exports){
 module.exports ={
 	ADD_ITEM: 'ADD_ITEM',
 	REMOVE_ITEM: 'REMOVE_ITEM',
@@ -20687,7 +20658,7 @@ module.exports ={
 	UPDATE_CHECKBOX: 'UPDATE_CHECKBOX'
 };
 
-},{}],170:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 var assign = require('react/lib/Object.assign');
 
@@ -20703,13 +20674,13 @@ var AppDispatcher = assign(new Dispatcher(),{
 
 module.exports = AppDispatcher;	
 
-},{"flux":3,"react/lib/Object.assign":31}],171:[function(require,module,exports){
+},{"flux":3,"react/lib/Object.assign":31}],170:[function(require,module,exports){
 var App = require('./components/app.js');
 var React = require('react');
 
 React.render(React.createElement(App, null), document.getElementById('main'));
 
-},{"./components/app.js":168,"react":160}],172:[function(require,module,exports){
+},{"./components/app.js":167,"react":160}],171:[function(require,module,exports){
 var React = require('react');
 var AppStore = require('../stores/App-Store.js');
 
@@ -20732,7 +20703,7 @@ var StoreWatchMixin = function(callBack){
 
 module.exports = StoreWatchMixin;
 
-},{"../stores/App-Store.js":173,"react":160}],173:[function(require,module,exports){
+},{"../stores/App-Store.js":172,"react":160}],172:[function(require,module,exports){
 var AppDispatcher = require('../dispatchers/App-Dispatcher.js');
 var AppConstants = require('../constants/App-Constants.js');
 var Storage = require('../Storage/App-Storage.js');
@@ -20815,4 +20786,4 @@ var AppStore = assign(EventEmitter.prototype,{
 
 module.exports = AppStore;
 
-},{"../Storage/App-Storage.js":161,"../constants/App-Constants.js":169,"../dispatchers/App-Dispatcher.js":170,"events":1,"react/lib/Object.assign":31}]},{},[171]);
+},{"../Storage/App-Storage.js":161,"../constants/App-Constants.js":168,"../dispatchers/App-Dispatcher.js":169,"events":1,"react/lib/Object.assign":31}]},{},[170]);
