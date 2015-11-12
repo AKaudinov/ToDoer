@@ -18,7 +18,7 @@ function _removeItem(index){
 	{
 	_list = [];
 	}
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 function _addItem(item){
@@ -26,17 +26,17 @@ function _addItem(item){
 		text: item,
 		done: false
 	});
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 function _editItem(item,index){
 	_list[index].text = item;
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 function _updateItemProgress(index,isDone){
 	_list[index].done = isDone;
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 var AppStore = assign(EventEmitter.prototype,{

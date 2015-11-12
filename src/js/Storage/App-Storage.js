@@ -2,8 +2,8 @@ var React = require('react');
 var listStorage = "ToDolist";
 
 var Storage = {
-	setLocalStorage: function(storageName, data){
-		localStorage.setItem(storageName, JSON.stringify(data));
+	setLocalStorage: function(data){
+		localStorage.setItem(listStorage, JSON.stringify(data));
 	},
 	retrieveLocalStorage: function(){
 			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];

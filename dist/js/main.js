@@ -20415,8 +20415,8 @@ var React = require('react');
 var listStorage = "ToDolist";
 
 var Storage = {
-	setLocalStorage: function(storageName, data){
-		localStorage.setItem(storageName, JSON.stringify(data));
+	setLocalStorage: function(data){
+		localStorage.setItem(listStorage, JSON.stringify(data));
 	},
 	retrieveLocalStorage: function(){
 			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
@@ -20501,12 +20501,11 @@ var AddItem = React.createClass({displayName: "AddItem",
 	},
 	errorHandler: function(){
 		var item = document.getElementById('itemInput');
-		if(item.value != ""){
+		if(item.value != "" && !this.state.isValid){
 			AppActions.removeAlert();
 		}
 	},
 	render: function(){
-		console.log(this.state.isValid);
 		var errorStyle={
 				border: '2px solid red'
 		};
@@ -20724,7 +20723,7 @@ function _removeItem(index){
 	{
 	_list = [];
 	}
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 function _addItem(item){
@@ -20732,17 +20731,17 @@ function _addItem(item){
 		text: item,
 		done: false
 	});
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 function _editItem(item,index){
 	_list[index].text = item;
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 function _updateItemProgress(index,isDone){
 	_list[index].done = isDone;
-	Storage.setLocalStorage(ListStorage, _list);
+	Storage.setLocalStorage(_list);
 }
 
 var AppStore = assign(EventEmitter.prototype,{

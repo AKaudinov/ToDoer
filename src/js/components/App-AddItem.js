@@ -28,12 +28,11 @@ var AddItem = React.createClass({
 	},
 	errorHandler: function(){
 		var item = document.getElementById('itemInput');
-		if(item.value != ""){
+		if(item.value != "" && !this.state.isValid){
 			AppActions.removeAlert();
 		}
 	},
 	render: function(){
-		console.log(this.state.isValid);
 		var errorStyle={
 				border: '2px solid red'
 		};
