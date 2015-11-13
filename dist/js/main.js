@@ -20415,18 +20415,17 @@ var React = require('react');
 var listStorage = "ToDolist";
 
 var Storage = {
-	setLocalStorage: function(data){
-		localStorage.setItem(listStorage, JSON.stringify(data));
-	},
-	retrieveLocalStorage: function(){
-			var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
-			if(tempList.length == 0)
-			{
-				localStorage.removeItem('ToDolist');
-			}
-			return tempList;
-	}
-}
+    setLocalStorage: function (data) {
+        localStorage.setItem(listStorage, JSON.stringify(data));
+    },
+    retrieveLocalStorage: function () {
+        var tempList = localStorage.getItem(listStorage) != null ? JSON.parse(localStorage.getItem(listStorage)) : [];
+        if (tempList.length == 0) {
+            localStorage.removeItem('ToDolist');
+        }
+        return tempList;
+    }
+};
 
 module.exports = Storage;
 
@@ -20435,38 +20434,38 @@ var AppConstants = require('../constants/App-Constants.js');
 var AppDispatcher = require('../dispatchers/App-Dispatcher.js');
 
 var AppActions = {
-	addItem: function(toDoItem){
-		AppDispatcher.handleViewAction({
-			actionType: AppConstants.ADD_ITEM,
-			toDoItem: toDoItem
-		})
-	},
-	removeItem: function(index){
-		AppDispatcher.handleViewAction({
-			actionType: AppConstants.REMOVE_ITEM,
-			index: index
-		})
-	},
-	editItem: function(toDoItem,index){
-		AppDispatcher.handleViewAction({
-			actionType: AppConstants.EDIT_ITEM,
-			toDoItem: toDoItem,
-			index: index
-		})
-	},
-	removeAlert: function(){
-		AppDispatcher.handleViewAction({
-			actionType: AppConstants.REMOVE_ALERT
-		})
-	},
-	updateCheckBox: function(index,isDone){
-		AppDispatcher.handleViewAction({
-			actionType: AppConstants.UPDATE_CHECKBOX,
-			index: index,
-			isDone: isDone
-		})
-	}
-}
+    addItem: function (toDoItem) {
+        AppDispatcher.handleViewAction({
+            actionType: AppConstants.ADD_ITEM,
+            toDoItem: toDoItem
+        })
+    },
+    removeItem: function (index) {
+        AppDispatcher.handleViewAction({
+            actionType: AppConstants.REMOVE_ITEM,
+            index: index
+        })
+    },
+    editItem: function (toDoItem, index) {
+        AppDispatcher.handleViewAction({
+            actionType: AppConstants.EDIT_ITEM,
+            toDoItem: toDoItem,
+            index: index
+        })
+    },
+    removeAlert: function () {
+        AppDispatcher.handleViewAction({
+            actionType: AppConstants.REMOVE_ALERT
+        })
+    },
+    updateCheckBox: function (index, isDone) {
+        AppDispatcher.handleViewAction({
+            actionType: AppConstants.UPDATE_CHECKBOX,
+            index: index,
+            isDone: isDone
+        })
+    }
+};
 
 module.exports = AppActions;
 
@@ -20476,53 +20475,53 @@ var AppActions = require('../actions/App-Actions.js');
 var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 
 
-function setValidState(){
-	return {isValid: true}
+function setValidState() {
+    return {isValid: true}
 }
 
 var AddItem = React.createClass({displayName: "AddItem",
-	mixins: [StoreWatchMixin(setValidState)],
-	handler: function(){
-		var itemValue = document.getElementById('itemInput').value;
-		if(itemValue == "")
-		{
-			this.setState({isValid: false});
-			return;
-		}
-		document.getElementById('itemInput').value="";
-		AppActions.addItem(itemValue)
-	},
-	keyHandler: function(event){
-		if(event.keyCode == 13)
-		{
-			this.handler();
-			event.preventDefault();
-		}
-	},
-	errorHandler: function(){
-		var item = document.getElementById('itemInput');
-		if(item.value != "" && !this.state.isValid){
-			AppActions.removeAlert();
-		}
-	},
-	render: function(){
-		var errorStyle={
-				border: '2px solid red'
-		};
-		return(
-			React.createElement("div", {className: "col-lg-6", align: "center"}, 
-			React.createElement("div", {className: "form-group"}, 
-				React.createElement("label", {className: "control-label"}, React.createElement("strong", null, "Add Item")), 
-					React.createElement("div", {className: "input-group"}, 
-						React.createElement("input", {type: "text", className: "form-control", id: "itemInput", onChange: this.errorHandler, style: this.state.isValid == true ? {border: 'none'} : errorStyle, onKeyDown: this.keyHandler}), 
+    mixins: [StoreWatchMixin(setValidState)],
+    handler: function () {
+        var itemValue = document.getElementById('itemInput').value;
+        if (itemValue == "") {
+            this.setState({isValid: false});
+            return;
+        }
+        document.getElementById('itemInput').value = "";
+        AppActions.addItem(itemValue)
+    },
+    keyHandler: function (event) {
+        if (event.keyCode == 13) {
+            this.handler();
+            event.preventDefault();
+        }
+    },
+    errorHandler: function () {
+        var item = document.getElementById('itemInput');
+        if (item.value != "" && !this.state.isValid) {
+            AppActions.removeAlert();
+        }
+    },
+    render: function () {
+        var errorStyle = {
+            border: '2px solid red'
+        };
+        return (
+            React.createElement("div", {className: "col-lg-6", align: "center"}, 
+                React.createElement("div", {className: "form-group"}, 
+                    React.createElement("label", {className: "control-label"}, React.createElement("strong", null, "Add Item")), 
+                    React.createElement("div", {className: "input-group"}, 
+                        React.createElement("input", {type: "text", className: "form-control", id: "itemInput", onChange: this.errorHandler, 
+                               style: this.state.isValid == true ? {border: 'none'} : errorStyle, 
+                               onKeyDown: this.keyHandler}), 
 						React.createElement("span", {className: "input-group-btn"}, 
 							React.createElement("button", {className: "btn btn-success", type: "button", onClick: this.handler}, "Add item")
 						)
-					)
-				)
-			)
-		)
-	}
+                    )
+                )
+            )
+        )
+    }
 });
 
 module.exports = AddItem;
@@ -20533,21 +20532,21 @@ var AppActions = require('../actions/App-Actions.js');
 var Storage = require('../Storage/App-Storage.js');
 
 var Item = React.createClass({displayName: "Item",
-	handler: function(itemId){
-		var item = document.getElementById(itemId).value;
-		if(item == "")
-		{
-			AppActions.removeItem(this.props.index);
-			return;
-		}
-		AppActions.editItem(item, this.props.index);
-	},
-	render: function(){
-		var itemId = "toDoItem" + this.props.index.toString();
-		return(
-			React.createElement("input", {type: "text", className: "form-control", id: itemId, onChange: this.handler.bind(this,itemId), defaultValue: this.props.item})
-		)
-	}
+    handler: function (itemId) {
+        var item = document.getElementById(itemId).value;
+        if (item == "") {
+            AppActions.removeItem(this.props.index);
+            return;
+        }
+        AppActions.editItem(item, this.props.index);
+    },
+    render: function () {
+        var itemId = "toDoItem" + this.props.index.toString();
+        return (
+            React.createElement("input", {type: "text", className: "form-control", id: itemId, onChange: this.handler.bind(this,itemId), 
+                   defaultValue: this.props.item})
+        )
+    }
 });
 
 module.exports = Item;
@@ -20562,54 +20561,54 @@ var StoreWatchMixin = require('../mixins/StoreWatchMixin.js');
 var Storage = require('../Storage/App-Storage.js');
 var AppActions = require('../actions/App-Actions.js');
 var ToDoImage = '/assets/ToDoArrow.png';
-var CompletedImage ='/assets/CompletedCheckBox.png';
+var CompletedImage = '/assets/CompletedCheckBox.png';
 
-function getTodoList(){
-	return { listItems: AppStore.getList() };
+function getTodoList() {
+    return {listItems: AppStore.getList()};
 }
 
 var List = React.createClass({displayName: "List",
-	mixins:[StoreWatchMixin(getTodoList)],
-	updateCheckBox: function(itemIndex, isDone){
-		AppActions.updateCheckBox(itemIndex, isDone);
-	},
-	render: function(){
-		if(this.state.listItems != null)
-		{
-			var listItems = this.state.listItems.map(function(listItem,i){
-				if(listItem != null)
-				{
-					var buttonid = "btnCheck" + [i].toString();
-					return(
-					React.createElement("div", {className: "col-lg-12", key: i}, 
-						React.createElement("div", {className: "form-group"}, 
-							React.createElement("div", {className: "input-group"}, 
+    mixins: [StoreWatchMixin(getTodoList)],
+    updateCheckBox: function (itemIndex, isDone) {
+        AppActions.updateCheckBox(itemIndex, isDone);
+    },
+    render: function () {
+        if (this.state.listItems != null) {
+            var listItems = this.state.listItems.map(function (listItem, i) {
+                if (listItem != null) {
+                    var buttonid = "btnCheck" + [i].toString();
+                    return (
+                        React.createElement("div", {className: "col-lg-12", key: i}, 
+                            React.createElement("div", {className: "form-group"}, 
+                                React.createElement("div", {className: "input-group"}, 
 								React.createElement("span", {className: "input-group-btn"}, 
-									React.createElement("button", {className: listItem.done ? "btn btn-info" : "btn btn-primary", type: "button", id: buttonid, onClick: this.updateCheckBox.bind(this,i,listItem.done ? false : true)}, 
-										React.createElement("img", {src: listItem.done ? CompletedImage : ToDoImage, width: "17", height: "15"})
-									)
+									React.createElement("button", {className: listItem.done ? "btn btn-info" : "btn btn-primary", type: "button", 
+                                            id: buttonid, 
+                                            onClick: this.updateCheckBox.bind(this,i,listItem.done ? false : true)}, 
+                                        React.createElement("img", {src: listItem.done ? CompletedImage : ToDoImage, width: "17", height: "15"})
+                                    )
 								), 
-								React.createElement(Item, {item: listItem.text, index: i, buttonId: buttonid}), 
-								React.createElement(RemoveItem, {index: i, buttonId: buttonid})
-							)
-						)
-					)
-					);
-				}	
-			},this);
-		}
-		return (
-			React.createElement("div", {className: "well bs-component"}, 
-				React.createElement("form", {className: "form-horizontal"}, 
-					React.createElement("fieldset", null, 
-						React.createElement("legend", null, "To do list"), 
-						listItems, 
-						React.createElement(AddItem, null)
-					)
-				)
-			)
-		)
-	}
+                                    React.createElement(Item, {item: listItem.text, index: i, buttonId: buttonid}), 
+                                    React.createElement(RemoveItem, {index: i, buttonId: buttonid})
+                                )
+                            )
+                        )
+                    );
+                }
+            }, this);
+        }
+        return (
+            React.createElement("div", {className: "well bs-component"}, 
+                React.createElement("form", {className: "form-horizontal"}, 
+                    React.createElement("fieldset", null, 
+                        React.createElement("legend", null, "To do list"), 
+                        listItems, 
+                        React.createElement(AddItem, null)
+                    )
+                )
+            )
+        )
+    }
 });
 
 module.exports = List;
@@ -20620,16 +20619,16 @@ var AppActions = require('../actions/App-Actions.js');
 var Storage = require('../Storage/App-Storage.js');
 
 var RemoveItem = React.createClass({displayName: "RemoveItem",
-	handler: function(){
-		AppActions.removeItem(this.props.index)
-	},
-	render: function(){
-		return(
-			React.createElement("span", {className: "input-group-btn"}, 
+    handler: function () {
+        AppActions.removeItem(this.props.index)
+    },
+    render: function () {
+        return (
+            React.createElement("span", {className: "input-group-btn"}, 
 				React.createElement("button", {className: "btn btn-danger", type: "button", onClick: this.handler}, "x")
 			)
-		)
-	}
+        )
+    }
 });
 
 module.exports = RemoveItem;
@@ -20639,37 +20638,37 @@ var React = require('react');
 var List = require('./App-List.js');
 
 var App = React.createClass({displayName: "App",
-	render: function(){
-		return React.createElement("div", {align: "center"}, 
-			React.createElement(List, null)
-		)
-	}
+    render: function () {
+        return React.createElement("div", {align: "center"}, 
+            React.createElement(List, null)
+        )
+    }
 });
 
 module.exports = App;
 
 },{"./App-List.js":165,"react":160}],168:[function(require,module,exports){
-module.exports ={
-	ADD_ITEM: 'ADD_ITEM',
-	REMOVE_ITEM: 'REMOVE_ITEM',
-	EDIT_ITEM: 'EDIT_ITEM',
-	REMOVE_ALERT: 'REMOVE_ALERT',
-	UPDATE_CHECKBOX: 'UPDATE_CHECKBOX'
+module.exports = {
+    ADD_ITEM: 'ADD_ITEM',
+    REMOVE_ITEM: 'REMOVE_ITEM',
+    EDIT_ITEM: 'EDIT_ITEM',
+    REMOVE_ALERT: 'REMOVE_ALERT',
+    UPDATE_CHECKBOX: 'UPDATE_CHECKBOX'
 };
 
 },{}],169:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher;
 var assign = require('react/lib/Object.assign');
 
-var AppDispatcher = assign(new Dispatcher(),{
-	handleViewAction: function(action){
-		console.log('action', action);
-			this.dispatch({
-				source: 'VIEW_ACTION',
-				action: action
-		})
-	}
-})
+var AppDispatcher = assign(new Dispatcher(), {
+    handleViewAction: function (action) {
+        console.log('action', action);
+        this.dispatch({
+            source: 'VIEW_ACTION',
+            action: action
+        })
+    }
+});
 
 module.exports = AppDispatcher;	
 
@@ -20683,22 +20682,22 @@ React.render(React.createElement(App, null), document.getElementById('main'));
 var React = require('react');
 var AppStore = require('../stores/App-Store.js');
 
-var StoreWatchMixin = function(callBack){
-	return{
-		getInitialState: function(){
-			return callBack(this)
-		},
-		componentWillMount: function(){
-			AppStore.addChangeListener(this._onChange)
-		},
-		componentWillUnmount: function(){
-			AppStore.removeChangeListener(this._onChange)
-		},
-		_onChange: function(){
-			this.setState(callBack(this))
-		}
-	}
-}
+var StoreWatchMixin = function (callBack) {
+    return {
+        getInitialState: function () {
+            return callBack(this)
+        },
+        componentWillMount: function () {
+            AppStore.addChangeListener(this._onChange)
+        },
+        componentWillUnmount: function () {
+            AppStore.removeChangeListener(this._onChange)
+        },
+        _onChange: function () {
+            this.setState(callBack(this))
+        }
+    }
+};
 
 module.exports = StoreWatchMixin;
 
@@ -20713,75 +20712,74 @@ var ListStorage = "ToDolist";
 
 var _list = [];
 
-function _returnList(){
-	return _list = Storage.retrieveLocalStorage();
+function _returnList() {
+    return _list = Storage.retrieveLocalStorage();
 }
 
-function _removeItem(index){
-	_list[index] = null;
-	if(!_list.some(item => item != null))
-	{
-	_list = [];
-	}
-	Storage.setLocalStorage(_list);
+function _removeItem(index) {
+    _list[index] = null;
+    if (!_list.some(item => item != null)) {
+        _list = [];
+    }
+    Storage.setLocalStorage(_list);
 }
 
-function _addItem(item){
-	_list.push({
-		text: item,
-		done: false
-	});
-	Storage.setLocalStorage(_list);
+function _addItem(item) {
+    _list.push({
+        text: item,
+        done: false
+    });
+    Storage.setLocalStorage(_list);
 }
 
-function _editItem(item,index){
-	_list[index].text = item;
-	Storage.setLocalStorage(_list);
+function _editItem(item, index) {
+    _list[index].text = item;
+    Storage.setLocalStorage(_list);
 }
 
-function _updateItemProgress(index,isDone){
-	_list[index].done = isDone;
-	Storage.setLocalStorage(_list);
+function _updateItemProgress(index, isDone) {
+    _list[index].done = isDone;
+    Storage.setLocalStorage(_list);
 }
 
-var AppStore = assign(EventEmitter.prototype,{
-	emitChange: function(){
-		this.emit(CHANGE_EVENT)
-	},
-	addChangeListener: function(callBack){
-		this.on(CHANGE_EVENT, callBack)
-	},
-	removeChangeListener: function(callback){
-		this.removeListener(CHANGE_EVENT, callBack)
-	},
+var AppStore = assign(EventEmitter.prototype, {
+    emitChange: function () {
+        this.emit(CHANGE_EVENT)
+    },
+    addChangeListener: function (callBack) {
+        this.on(CHANGE_EVENT, callBack)
+    },
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callBack)
+    },
 
-	getList: function(){
-		return _returnList();
-	},
+    getList: function () {
+        return _returnList();
+    },
 
-	dispatcherIndex: AppDispatcher.register(function(payload){
-		var action = payload.action //this is our action from handleViewAction
-		switch(action.actionType){
-			case AppConstants.ADD_ITEM:
-				_addItem(payload.action.toDoItem);
-			break;
-			case AppConstants.REMOVE_ITEM:
-				_removeItem(payload.action.index);
-			break;
-			case AppConstants.EDIT_ITEM:
-				_editItem(payload.action.toDoItem,payload.action.index)
-			break;
-			case AppConstants.REMOVE_ALERT:
-			break;
-			case AppConstants.UPDATE_CHECKBOX:
-				_updateItemProgress(payload.action.index,payload.action.isDone);
-			break;
-		}
-		AppStore.emitChange();
+    dispatcherIndex: AppDispatcher.register(function (payload) {
+        var action = payload.action //this is our action from handleViewAction
+        switch (action.actionType) {
+            case AppConstants.ADD_ITEM:
+                _addItem(payload.action.toDoItem);
+                break;
+            case AppConstants.REMOVE_ITEM:
+                _removeItem(payload.action.index);
+                break;
+            case AppConstants.EDIT_ITEM:
+                _editItem(payload.action.toDoItem, payload.action.index)
+                break;
+            case AppConstants.REMOVE_ALERT:
+                break;
+            case AppConstants.UPDATE_CHECKBOX:
+                _updateItemProgress(payload.action.index, payload.action.isDone);
+                break;
+        }
+        AppStore.emitChange();
 
-		return true;
-	})
-})
+        return true;
+    })
+});
 
 module.exports = AppStore;
 
