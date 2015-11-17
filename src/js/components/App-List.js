@@ -35,7 +35,7 @@ var List = React.createClass({
                                     </button>
 								</span>
                                     <Item item={listItem.text} index={i} buttonId={buttonid}/>
-                                    <RemoveItem index={i} buttonId={buttonid}/>
+                                    <RemoveItem index={i} />
                                 </div>
                             </div>
                         </div>
@@ -47,7 +47,7 @@ var List = React.createClass({
             <div className="well bs-component">
                 <form className="form-horizontal">
                     <fieldset>
-                        <legend>To do list</legend>
+                        <legend><strong>To do list</strong></legend>
                         {listItems}
                         <AddItem />
                     </fieldset>

@@ -20589,7 +20589,7 @@ var List = React.createClass({displayName: "List",
                                     )
 								), 
                                     React.createElement(Item, {item: listItem.text, index: i, buttonId: buttonid}), 
-                                    React.createElement(RemoveItem, {index: i, buttonId: buttonid})
+                                    React.createElement(RemoveItem, {index: i})
                                 )
                             )
                         )
@@ -20601,7 +20601,7 @@ var List = React.createClass({displayName: "List",
             React.createElement("div", {className: "well bs-component"}, 
                 React.createElement("form", {className: "form-horizontal"}, 
                     React.createElement("fieldset", null, 
-                        React.createElement("legend", null, "To do list"), 
+                        React.createElement("legend", null, React.createElement("strong", null, "To do list")), 
                         listItems, 
                         React.createElement(AddItem, null)
                     )
