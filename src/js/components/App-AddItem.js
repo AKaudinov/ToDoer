@@ -11,7 +11,7 @@ var AddItem = React.createClass({
     mixins: [StoreWatchMixin(setValidState)],
     handler: function () {
         var itemValue = document.getElementById('itemInput').value;
-        if (itemValue == "") {
+        if (!itemValue.match(/[A-Za-z\d+:.,"';]/)) {
             this.setState({isValid: false});
             return;
         }
@@ -26,7 +26,7 @@ var AddItem = React.createClass({
     },
     errorHandler: function () {
         var item = document.getElementById('itemInput');
-        if (item.value != "" && !this.state.isValid) {
+        if (item.value.match(/\w/) && !this.state.isValid) {
             AppActions.removeAlert();
         }
     },

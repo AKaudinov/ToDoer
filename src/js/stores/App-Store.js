@@ -57,18 +57,18 @@ var AppStore = assign(EventEmitter.prototype, {
         var action = payload.action //this is our action from handleViewAction
         switch (action.actionType) {
             case AppConstants.ADD_ITEM:
-                _addItem(payload.action.toDoItem);
+                _addItem(action.toDoItem);
                 break;
             case AppConstants.REMOVE_ITEM:
-                _removeItem(payload.action.index);
+                _removeItem(action.index);
                 break;
             case AppConstants.EDIT_ITEM:
-                _editItem(payload.action.toDoItem, payload.action.index)
+                _editItem(action.toDoItem, action.index)
                 break;
             case AppConstants.REMOVE_ALERT:
                 break;
             case AppConstants.UPDATE_CHECKBOX:
-                _updateItemProgress(payload.action.index, payload.action.isDone);
+                _updateItemProgress(action.index, action.isDone);
                 break;
         }
         AppStore.emitChange();
