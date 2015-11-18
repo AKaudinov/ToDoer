@@ -20483,7 +20483,7 @@ var AddItem = React.createClass({displayName: "AddItem",
     mixins: [StoreWatchMixin(setValidState)],
     handler: function () {
         var itemValue = document.getElementById('itemInput').value;
-        if (!itemValue.match(/[A-Za-z\d+:.,"';]/)) {
+        if (itemValue.startsWith(' ') || itemValue == "") {
             this.setState({isValid: false});
             return;
         }
