@@ -32,7 +32,11 @@ var AddItem = React.createClass({
     },
     render: function () {
         var errorStyle = {
-            border: '2px solid red'
+            border: '2px solid #d9534f'
+        };
+        var errorTextStyle = {
+            backgroundColor: '#d9534f',
+            color: 'white'
         };
         return (
             <div className="col-lg-6" align="center">
@@ -46,6 +50,8 @@ var AddItem = React.createClass({
 							<button className="btn btn-success" type="button" onClick={this.handler}>Add item</button>
 						</span>
                     </div>
+                    {this.state.isValid == true ? <span/> :
+                        <div><span style={errorTextStyle}>The item can not be empty or have leading spaces</span></div>}
                 </div>
             </div>
         )

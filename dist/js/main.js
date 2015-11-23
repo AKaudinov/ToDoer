@@ -20504,7 +20504,11 @@ var AddItem = React.createClass({displayName: "AddItem",
     },
     render: function () {
         var errorStyle = {
-            border: '2px solid red'
+            border: '2px solid #d9534f'
+        };
+        var errorTextStyle = {
+            backgroundColor: '#d9534f',
+            color: 'white'
         };
         return (
             React.createElement("div", {className: "col-lg-6", align: "center"}, 
@@ -20517,7 +20521,9 @@ var AddItem = React.createClass({displayName: "AddItem",
 						React.createElement("span", {className: "input-group-btn"}, 
 							React.createElement("button", {className: "btn btn-success", type: "button", onClick: this.handler}, "Add item")
 						)
-                    )
+                    ), 
+                    this.state.isValid == true ? React.createElement("span", null) :
+                        React.createElement("div", null, React.createElement("span", {style: errorTextStyle}, "The item can not be empty or have leading spaces"))
                 )
             )
         )
@@ -20718,7 +20724,7 @@ function _returnList() {
 
 function _removeItem(index) {
     _list[index] = null;
-    if (!_list.some(item => item != null)) {
+    if (!_list.some(function(item){return item != null})) {
         _list = [];
     }
     Storage.setLocalStorage(_list);

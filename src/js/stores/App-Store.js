@@ -14,7 +14,7 @@ function _returnList() {
 
 function _removeItem(index) {
     _list[index] = null;
-    if (!_list.some(item => item != null)) {
+    if (!_list.some(function(item){return item != null})) {
         _list = [];
     }
     Storage.setLocalStorage(_list);
